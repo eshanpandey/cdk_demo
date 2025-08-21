@@ -28,22 +28,31 @@ class PipelineStack(Stack):
             )
         )
 
-        # Add Test stage (Dummy stack)
-        pipeline.add_stage(DummyApp(self, "TestStage"))
+        # Add Test stage (deploy Dummy stack)
+        test_stage = DummyApp(self, "TestStage")
+        pipeline.add_stage(test_stage)
 
-        # Add Destroy stage
-        pipeline.add_wave("DestroyWave", post=[
-            pipelines.ShellStep("DestroyStep",
-                commands=[
-                    "npm install -g aws-cdk",
-                    "pip install -r requirements.txt",
-                    "cdk destroy DummyStack --force --app ."
-                ]
-            )
+        # Add manual approval before destroy (recommended for safety)
+        pipeline.add_wave("ApproveDestroyWave", post=[
+            pipelines.ManualApprovalStep("ApproveDestroy")
         ])
+
+        # Add Destroy stage (CloudFormation delete)
+        destroy_stage = DummyDestroyApp(self, "DestroyStage")
+        pipeline.add_stage(destroy_stage)
 
 
 class DummyApp(cdk.Stage):
+    """Deploys Dummy stack for testing"""
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
         DummyStack(self, "DummyStack")
+
+
+class DummyDestroyApp(cdk.Stage):
+    """Deploys an *empty* stage to effectively delete DummyStack"""
+    def __init__(self, scope: Construct, id: str, **kwargs):
+        super().__init__(scope, id, **kwargs)
+        # 👇 Nothing inside this Stage
+        # When deployed, CloudFormation sees DummyStack no longer exists in this stage,
+        # so it deletes it.
