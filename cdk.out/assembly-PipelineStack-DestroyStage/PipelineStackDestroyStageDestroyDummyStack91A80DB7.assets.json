@@ -1,0 +1,19 @@
+{
+  "version": "34.0.0",
+  "files": {
+    "2025a0de906cc71b91e27fc1c509028473f6c0c76e21e9fb8fff856dcd2f77d3": {
+      "source": {
+        "path": "PipelineStackDestroyStageDestroyDummyStack91A80DB7.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "2025a0de906cc71b91e27fc1c509028473f6c0c76e21e9fb8fff856dcd2f77d3.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

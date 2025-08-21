@@ -1,9 +1,10 @@
 from aws_cdk import (
     Stack,
     pipelines as pipelines,
+    RemovalPolicy,
+    aws_s3 as s3,
 )
 from constructs import Construct
-from .dummy_stack import DummyStack
 import aws_cdk as cdk
 
 
@@ -11,48 +12,54 @@ class PipelineStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
-        # Use your existing CodeStar connection
         pipeline = pipelines.CodePipeline(
             self, "Pipeline",
             synth=pipelines.ShellStep("Synth",
                 input=pipelines.CodePipelineSource.connection(
-                    "eshanpandey/cdk_demo",   # 👈 your repo
-                    "main",                   # 👈 branch to track
+                    "eshanpandey/cdk_demo",
+                    "main",
                     connection_arn="arn:aws:codeconnections:ap-south-1:996200611121:connection/611f4017-ae11-4f95-8ab1-9cf3e2cf8610"
                 ),
                 commands=[
-                    "npm install -g aws-cdk",          # install CDK CLI
-                    "pip install -r requirements.txt", # install Python deps
-                    "cdk synth"                        # synthesize cloud assembly
+                    "npm install -g aws-cdk",
+                    "pip install -r requirements.txt",
+                    "cdk synth"
                 ]
             )
         )
 
-        # Add Test stage (deploy Dummy stack)
-        test_stage = DummyApp(self, "TestStage")
-        pipeline.add_stage(test_stage)
+        # Deploy stage
+        pipeline.add_stage(DummyApp(self, "TestStage"))
 
-        # Add manual approval before destroy (recommended for safety)
-        pipeline.add_wave("ApproveDestroyWave", post=[
-            pipelines.ManualApprovalStep("ApproveDestroy")
-        ])
-
-        # Add Destroy stage (CloudFormation delete)
-        destroy_stage = DummyDestroyApp(self, "DestroyStage")
-        pipeline.add_stage(destroy_stage)
+        # Destroy stage (CloudFormation will delete stack)
+        pipeline.add_stage(DestroyApp(self, "DestroyStage"))
 
 
 class DummyApp(cdk.Stage):
-    """Deploys Dummy stack for testing"""
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
         DummyStack(self, "DummyStack")
 
 
-class DummyDestroyApp(cdk.Stage):
-    """Deploys an *empty* stage to effectively delete DummyStack"""
+class DestroyApp(cdk.Stage):
     def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
-        # 👇 Nothing inside this Stage
-        # When deployed, CloudFormation sees DummyStack no longer exists in this stage,
-        # so it deletes it.
+        DestroyStack(self, "DestroyDummyStack")
+
+
+class DummyStack(Stack):
+    def __init__(self, scope: Construct, id: str, **kwargs):
+        super().__init__(scope, id, **kwargs)
+
+        s3.Bucket(
+            self, "DemoBucket",
+            removal_policy=RemovalPolicy.DESTROY,
+            auto_delete_objects=True
+        )
+
+
+class DestroyStack(Stack):
+    """An empty stack just so CloudFormation DELETE_ONLY works"""
+    def __init__(self, scope: Construct, id: str, **kwargs):
+        super().__init__(scope, id, **kwargs)
+        # no resources, ensures stack can be safely deleted

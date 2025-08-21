@@ -598,31 +598,111 @@
                             ]
                           },
                           {
-                            "name": "DestroyWave",
+                            "name": "DestroyStage",
                             "actions": [
                               {
-                                "name": "DestroyStep",
+                                "name": "Prepare",
                                 "inputArtifacts": [
                                   {
-                                    "name": "eshanpandey_cdk_demo_Source"
+                                    "name": "Synth_Output"
                                   }
                                 ],
                                 "actionTypeId": {
-                                  "category": "Build",
+                                  "category": "Deploy",
                                   "version": "1",
                                   "owner": "AWS",
-                                  "provider": "CodeBuild"
+                                  "provider": "CloudFormation"
                                 },
                                 "configuration": {
-                                  "ProjectName": {
-                                    "Ref": "PipelineDestroyWaveDestroyStepEC4B0310"
-                                  }
+                                  "StackName": "DestroyStage-DestroyDummyStack",
+                                  "Capabilities": "CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND",
+                                  "RoleArn": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":iam::",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":role/cdk-hnb659fds-cfn-exec-role-",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        "-",
+                                        {
+                                          "Ref": "AWS::Region"
+                                        }
+                                      ]
+                                    ]
+                                  },
+                                  "ActionMode": "CHANGE_SET_REPLACE",
+                                  "ChangeSetName": "PipelineChange",
+                                  "TemplatePath": "Synth_Output::assembly-PipelineStack-DestroyStage/PipelineStackDestroyStageDestroyDummyStack91A80DB7.template.json"
                                 },
                                 "runOrder": 1,
                                 "roleArn": {
-                                  "Fn::GetAtt": [
-                                    "PipelineCodeBuildActionRole226DB0CB",
-                                    "Arn"
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":iam::",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":role/cdk-hnb659fds-deploy-role-",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      "-",
+                                      {
+                                        "Ref": "AWS::Region"
+                                      }
+                                    ]
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "Deploy",
+                                "actionTypeId": {
+                                  "category": "Deploy",
+                                  "version": "1",
+                                  "owner": "AWS",
+                                  "provider": "CloudFormation"
+                                },
+                                "configuration": {
+                                  "StackName": "DestroyStage-DestroyDummyStack",
+                                  "ActionMode": "CHANGE_SET_EXECUTE",
+                                  "ChangeSetName": "PipelineChange"
+                                },
+                                "runOrder": 2,
+                                "roleArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":iam::",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":role/cdk-hnb659fds-deploy-role-",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      "-",
+                                      {
+                                        "Ref": "AWS::Region"
+                                      }
+                                    ]
                                   ]
                                 }
                               }
@@ -1160,237 +1240,21 @@
                       "version": "2.100.0"
                     }
                   },
-                  "DestroyWave": {
-                    "id": "DestroyWave",
-                    "path": "PipelineStack/Pipeline/Pipeline/DestroyWave",
+                  "DestroyStage": {
+                    "id": "DestroyStage",
+                    "path": "PipelineStack/Pipeline/Pipeline/DestroyStage",
                     "children": {
-                      "DestroyStep": {
-                        "id": "DestroyStep",
-                        "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep",
-                        "children": {
-                          "DestroyStep": {
-                            "id": "DestroyStep",
-                            "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep",
-                            "children": {
-                              "Role": {
-                                "id": "Role",
-                                "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Role",
-                                "children": {
-                                  "ImportRole": {
-                                    "id": "ImportRole",
-                                    "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Role/ImportRole",
-                                    "constructInfo": {
-                                      "fqn": "aws-cdk-lib.Resource",
-                                      "version": "2.100.0"
-                                    }
-                                  },
-                                  "Resource": {
-                                    "id": "Resource",
-                                    "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Role/Resource",
-                                    "attributes": {
-                                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                                      "aws:cdk:cloudformation:props": {
-                                        "assumeRolePolicyDocument": {
-                                          "Statement": [
-                                            {
-                                              "Action": "sts:AssumeRole",
-                                              "Effect": "Allow",
-                                              "Principal": {
-                                                "Service": "codebuild.amazonaws.com"
-                                              }
-                                            }
-                                          ],
-                                          "Version": "2012-10-17"
-                                        }
-                                      }
-                                    },
-                                    "constructInfo": {
-                                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                                      "version": "2.100.0"
-                                    }
-                                  },
-                                  "DefaultPolicy": {
-                                    "id": "DefaultPolicy",
-                                    "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Role/DefaultPolicy",
-                                    "children": {
-                                      "Resource": {
-                                        "id": "Resource",
-                                        "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Role/DefaultPolicy/Resource",
-                                        "attributes": {
-                                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
-                                          "aws:cdk:cloudformation:props": {
-                                            "policyDocument": {
-                                              "Statement": [
-                                                {
-                                                  "Action": [
-                                                    "logs:CreateLogGroup",
-                                                    "logs:CreateLogStream",
-                                                    "logs:PutLogEvents"
-                                                  ],
-                                                  "Effect": "Allow",
-                                                  "Resource": [
-                                                    {
-                                                      "Fn::Join": [
-                                                        "",
-                                                        [
-                                                          "arn:",
-                                                          {
-                                                            "Ref": "AWS::Partition"
-                                                          },
-                                                          ":logs:ap-south-1:996200611121:log-group:/aws/codebuild/",
-                                                          {
-                                                            "Ref": "PipelineDestroyWaveDestroyStepEC4B0310"
-                                                          }
-                                                        ]
-                                                      ]
-                                                    },
-                                                    {
-                                                      "Fn::Join": [
-                                                        "",
-                                                        [
-                                                          "arn:",
-                                                          {
-                                                            "Ref": "AWS::Partition"
-                                                          },
-                                                          ":logs:ap-south-1:996200611121:log-group:/aws/codebuild/",
-                                                          {
-                                                            "Ref": "PipelineDestroyWaveDestroyStepEC4B0310"
-                                                          },
-                                                          ":*"
-                                                        ]
-                                                      ]
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "Action": [
-                                                    "codebuild:CreateReportGroup",
-                                                    "codebuild:CreateReport",
-                                                    "codebuild:UpdateReport",
-                                                    "codebuild:BatchPutTestCases",
-                                                    "codebuild:BatchPutCodeCoverages"
-                                                  ],
-                                                  "Effect": "Allow",
-                                                  "Resource": {
-                                                    "Fn::Join": [
-                                                      "",
-                                                      [
-                                                        "arn:",
-                                                        {
-                                                          "Ref": "AWS::Partition"
-                                                        },
-                                                        ":codebuild:ap-south-1:996200611121:report-group/",
-                                                        {
-                                                          "Ref": "PipelineDestroyWaveDestroyStepEC4B0310"
-                                                        },
-                                                        "-*"
-                                                      ]
-                                                    ]
-                                                  }
-                                                },
-                                                {
-                                                  "Action": [
-                                                    "s3:GetObject*",
-                                                    "s3:GetBucket*",
-                                                    "s3:List*"
-                                                  ],
-                                                  "Effect": "Allow",
-                                                  "Resource": [
-                                                    {
-                                                      "Fn::GetAtt": [
-                                                        "PipelineArtifactsBucketAEA9A052",
-                                                        "Arn"
-                                                      ]
-                                                    },
-                                                    {
-                                                      "Fn::Join": [
-                                                        "",
-                                                        [
-                                                          {
-                                                            "Fn::GetAtt": [
-                                                              "PipelineArtifactsBucketAEA9A052",
-                                                              "Arn"
-                                                            ]
-                                                          },
-                                                          "/*"
-                                                        ]
-                                                      ]
-                                                    }
-                                                  ]
-                                                }
-                                              ],
-                                              "Version": "2012-10-17"
-                                            },
-                                            "policyName": "PipelineDestroyWaveDestroyStepRoleDefaultPolicyCCF30D63",
-                                            "roles": [
-                                              {
-                                                "Ref": "PipelineDestroyWaveDestroyStepRoleFF7ED7C9"
-                                              }
-                                            ]
-                                          }
-                                        },
-                                        "constructInfo": {
-                                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
-                                          "version": "2.100.0"
-                                        }
-                                      }
-                                    },
-                                    "constructInfo": {
-                                      "fqn": "aws-cdk-lib.aws_iam.Policy",
-                                      "version": "2.100.0"
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_iam.Role",
-                                  "version": "2.100.0"
-                                }
-                              },
-                              "Resource": {
-                                "id": "Resource",
-                                "path": "PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Resource",
-                                "attributes": {
-                                  "aws:cdk:cloudformation:type": "AWS::CodeBuild::Project",
-                                  "aws:cdk:cloudformation:props": {
-                                    "artifacts": {
-                                      "type": "CODEPIPELINE"
-                                    },
-                                    "cache": {
-                                      "type": "NO_CACHE"
-                                    },
-                                    "description": "Pipeline step PipelineStack/Pipeline/DestroyWave/DestroyStep",
-                                    "encryptionKey": "alias/aws/s3",
-                                    "environment": {
-                                      "type": "LINUX_CONTAINER",
-                                      "image": "aws/codebuild/standard:7.0",
-                                      "imagePullCredentialsType": "CODEBUILD",
-                                      "privilegedMode": false,
-                                      "computeType": "BUILD_GENERAL1_SMALL"
-                                    },
-                                    "serviceRole": {
-                                      "Fn::GetAtt": [
-                                        "PipelineDestroyWaveDestroyStepRoleFF7ED7C9",
-                                        "Arn"
-                                      ]
-                                    },
-                                    "source": {
-                                      "type": "CODEPIPELINE",
-                                      "buildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"npm install -g aws-cdk\",\n        \"pip install -r requirements.txt\",\n        \"cdk destroy DummyStack --force --app .\"\n      ]\n    }\n  }\n}"
-                                    }
-                                  }
-                                },
-                                "constructInfo": {
-                                  "fqn": "aws-cdk-lib.aws_codebuild.CfnProject",
-                                  "version": "2.100.0"
-                                }
-                              }
-                            },
-                            "constructInfo": {
-                              "fqn": "aws-cdk-lib.aws_codebuild.PipelineProject",
-                              "version": "2.100.0"
-                            }
-                          }
-                        },
+                      "Prepare": {
+                        "id": "Prepare",
+                        "path": "PipelineStack/Pipeline/Pipeline/DestroyStage/Prepare",
+                        "constructInfo": {
+                          "fqn": "constructs.Construct",
+                          "version": "10.4.2"
+                        }
+                      },
+                      "Deploy": {
+                        "id": "Deploy",
+                        "path": "PipelineStack/Pipeline/Pipeline/DestroyStage/Deploy",
                         "constructInfo": {
                           "fqn": "constructs.Construct",
                           "version": "10.4.2"
@@ -1500,20 +1364,6 @@
                                   "Resource": {
                                     "Fn::GetAtt": [
                                       "PipelineAssetsFileAsset185A67CB4",
-                                      "Arn"
-                                    ]
-                                  }
-                                },
-                                {
-                                  "Action": [
-                                    "codebuild:BatchGetBuilds",
-                                    "codebuild:StartBuild",
-                                    "codebuild:StopBuild"
-                                  ],
-                                  "Effect": "Allow",
-                                  "Resource": {
-                                    "Fn::GetAtt": [
-                                      "PipelineDestroyWaveDestroyStepEC4B0310",
                                       "Arn"
                                     ]
                                   }
@@ -2245,6 +2095,68 @@
                   "CheckBootstrapVersion": {
                     "id": "CheckBootstrapVersion",
                     "path": "PipelineStack/TestStage/DummyStack/CheckBootstrapVersion",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnRule",
+                      "version": "2.100.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Stack",
+                  "version": "2.100.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Stage",
+              "version": "2.100.0"
+            }
+          },
+          "DestroyStage": {
+            "id": "DestroyStage",
+            "path": "PipelineStack/DestroyStage",
+            "children": {
+              "DestroyDummyStack": {
+                "id": "DestroyDummyStack",
+                "path": "PipelineStack/DestroyStage/DestroyDummyStack",
+                "children": {
+                  "CDKMetadata": {
+                    "id": "CDKMetadata",
+                    "path": "PipelineStack/DestroyStage/DestroyDummyStack/CDKMetadata",
+                    "children": {
+                      "Default": {
+                        "id": "Default",
+                        "path": "PipelineStack/DestroyStage/DestroyDummyStack/CDKMetadata/Default",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.CfnResource",
+                          "version": "2.100.0"
+                        }
+                      },
+                      "Condition": {
+                        "id": "Condition",
+                        "path": "PipelineStack/DestroyStage/DestroyDummyStack/CDKMetadata/Condition",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.CfnCondition",
+                          "version": "2.100.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "constructs.Construct",
+                      "version": "10.4.2"
+                    }
+                  },
+                  "BootstrapVersion": {
+                    "id": "BootstrapVersion",
+                    "path": "PipelineStack/DestroyStage/DestroyDummyStack/BootstrapVersion",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnParameter",
+                      "version": "2.100.0"
+                    }
+                  },
+                  "CheckBootstrapVersion": {
+                    "id": "CheckBootstrapVersion",
+                    "path": "PipelineStack/DestroyStage/DestroyDummyStack/CheckBootstrapVersion",
                     "constructInfo": {
                       "fqn": "aws-cdk-lib.CfnRule",
                       "version": "2.100.0"

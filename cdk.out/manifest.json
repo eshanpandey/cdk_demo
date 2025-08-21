@@ -8,6 +8,13 @@
         "displayName": "PipelineStack/TestStage"
       }
     },
+    "assembly-PipelineStack-DestroyStage": {
+      "type": "cdk:cloud-assembly",
+      "properties": {
+        "directoryName": "assembly-PipelineStack-DestroyStage",
+        "displayName": "PipelineStack/DestroyStage"
+      }
+    },
     "PipelineStack.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
@@ -25,7 +32,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::996200611121:role/cdk-hnb659fds-deploy-role-996200611121-ap-south-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::996200611121:role/cdk-hnb659fds-cfn-exec-role-996200611121-ap-south-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-996200611121-ap-south-1/378fb867d374a277818b3315ccec7455d040ee26b338a29c27045224030fb331.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-996200611121-ap-south-1/08f2614806e88491e9572e733f7cec637bc4c9bb12c92847912087c607bc5b1e.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -99,24 +106,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "PipelineBuildSynthCdkBuildProject6BEFA8E6"
-          }
-        ],
-        "/PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Role/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PipelineDestroyWaveDestroyStepRoleFF7ED7C9"
-          }
-        ],
-        "/PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Role/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PipelineDestroyWaveDestroyStepRoleDefaultPolicyCCF30D63"
-          }
-        ],
-        "/PipelineStack/Pipeline/Pipeline/DestroyWave/DestroyStep/DestroyStep/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PipelineDestroyWaveDestroyStepEC4B0310"
           }
         ],
         "/PipelineStack/Pipeline/CodeBuildActionRole/Resource": [
