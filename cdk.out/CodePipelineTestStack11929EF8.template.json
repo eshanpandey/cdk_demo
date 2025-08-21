@@ -1,0 +1,674 @@
+{
+ "Resources": {
+  "TestBucket560B80BC": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestBucket/Resource"
+   }
+  },
+  "TestBucketPolicyBA12ED38": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "TestBucket560B80BC"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "TestBucket560B80BC",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "TestBucket560B80BC",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestBucket/Policy/Resource"
+   }
+  },
+  "TestBucketAutoDeleteObjectsCustomResource8FEAABD5": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "TestBucket560B80BC"
+    }
+   },
+   "DependsOn": [
+    "TestBucketPolicyBA12ED38"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Ref": "AssetParameters87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68S3Bucket9D103635"
+     },
+     "S3Key": {
+      "Fn::Join": [
+       "",
+       [
+        {
+         "Fn::Select": [
+          0,
+          {
+           "Fn::Split": [
+            "||",
+            {
+             "Ref": "AssetParameters87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68S3VersionKey2A13B0CB"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "Fn::Select": [
+          1,
+          {
+           "Fn::Split": [
+            "||",
+            {
+             "Ref": "AssetParameters87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68S3VersionKey2A13B0CB"
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      ]
+     }
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "__entrypoint__.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs14.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "TestBucket560B80BC"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68",
+    "aws:asset:property": "Code"
+   }
+  },
+  "TestVpcE77CE678": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CodePipelineTestStack/TestStack/TestVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestVpc/Resource"
+   }
+  },
+  "TestVpcpublicSubnet1Subnet4F70BC85": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "VpcId": {
+     "Ref": "TestVpcE77CE678"
+    },
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.0.0/16",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "CodePipelineTestStack/TestStack/TestVpc/publicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestVpc/publicSubnet1/Subnet"
+   }
+  },
+  "TestVpcpublicSubnet1RouteTableD55D3AC3": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "VpcId": {
+     "Ref": "TestVpcE77CE678"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CodePipelineTestStack/TestStack/TestVpc/publicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestVpc/publicSubnet1/RouteTable"
+   }
+  },
+  "TestVpcpublicSubnet1RouteTableAssociationEA0572FC": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TestVpcpublicSubnet1RouteTableD55D3AC3"
+    },
+    "SubnetId": {
+     "Ref": "TestVpcpublicSubnet1Subnet4F70BC85"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestVpc/publicSubnet1/RouteTableAssociation"
+   }
+  },
+  "TestVpcpublicSubnet1DefaultRoute5A98368D": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "TestVpcpublicSubnet1RouteTableD55D3AC3"
+    },
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "TestVpcIGW9DD53F70"
+    }
+   },
+   "DependsOn": [
+    "TestVpcVPCGWF1827B84"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestVpc/publicSubnet1/DefaultRoute"
+   }
+  },
+  "TestVpcIGW9DD53F70": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CodePipelineTestStack/TestStack/TestVpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestVpc/IGW"
+   }
+  },
+  "TestVpcVPCGWF1827B84": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "VpcId": {
+     "Ref": "TestVpcE77CE678"
+    },
+    "InternetGatewayId": {
+     "Ref": "TestVpcIGW9DD53F70"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestVpc/VPCGW"
+   }
+  },
+  "TestInstanceInstanceSecurityGroupFC9BD332": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "CodePipelineTestStack/TestStack/TestInstance/InstanceSecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CodePipelineTestStack/TestStack/TestInstance"
+     }
+    ],
+    "VpcId": {
+     "Ref": "TestVpcE77CE678"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestInstance/InstanceSecurityGroup/Resource"
+   }
+  },
+  "TestInstanceInstanceRole73B579CC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": {
+         "Fn::Join": [
+          "",
+          [
+           "ec2.",
+           {
+            "Ref": "AWS::URLSuffix"
+           }
+          ]
+         ]
+        }
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CodePipelineTestStack/TestStack/TestInstance"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestInstance/InstanceRole/Resource"
+   }
+  },
+  "TestInstanceInstanceProfileD0E25910": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "TestInstanceInstanceRole73B579CC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestInstance/InstanceProfile"
+   }
+  },
+  "TestInstance44016A9E": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "IamInstanceProfile": {
+     "Ref": "TestInstanceInstanceProfileD0E25910"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t2.micro",
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "TestInstanceInstanceSecurityGroupFC9BD332",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": {
+     "Ref": "TestVpcpublicSubnet1Subnet4F70BC85"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "CodePipelineTestStack/TestStack/TestInstance"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash"
+    }
+   },
+   "DependsOn": [
+    "TestInstanceInstanceRole73B579CC"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/TestInstance/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/11Qy26DMBD8ltwd50HVc1MOUU61oMrdmE3iAF5krxsh5H+vgVDannZ2Zva54/vtC9+u3uTDrVVZbXqFFnifk1QVS70jbDJw6K0Cll7Mgv9IwuKXLsGyg3NAsfiqzZWlaBxZr2ioFNLKBih6fvf78NT6UY/mUpNGE9iwS+8S3r97VcGoPtEUBNZadQs95YGB2vP+3KpBOYuUCV9EIfeFmZosKENP8CmLGhZ+4eIRqLQclvkxD+Bk4vrReZQED9k9xzyzA8WX3RowxE7xbGnigTkobzV1R4u+HSf9J2ZrYFo2vM9w2miOsxz/e9E1hBCY6OiGZpPwXcJfV3en9dp6Q7oBnk3xG1rNfVrUAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "CodePipelineTestStack/TestStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Parameters": {
+  "AssetParameters87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68S3Bucket9D103635": {
+   "Type": "String",
+   "Description": "S3 bucket for asset \"87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68\""
+  },
+  "AssetParameters87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68S3VersionKey2A13B0CB": {
+   "Type": "String",
+   "Description": "S3 key for asset version \"87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68\""
+  },
+  "AssetParameters87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68ArtifactHash4B825997": {
+   "Type": "String",
+   "Description": "Artifact hash for asset \"87992593f580de1d66f5bb69d244245c18849ba03c37132d3a14899191352a68\""
+  },
+  "SsmParameterValueawsserviceamiamazonlinuxlatestamzn2amihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+  }
+ },
+ "Outputs": {
+  "TestBucketName": {
+   "Description": "Name of the test S3 bucket",
+   "Value": {
+    "Ref": "TestBucket560B80BC"
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
