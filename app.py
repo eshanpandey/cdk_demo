@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
+import aws_cdk as cdk
+from stacks.pipeline_stack import PipelineStack
 
-from aws_cdk import App
-from stacks.test_pipeline_stack import TestPipelineStack  # ← Import from test_pipeline_stack.py
-
-app = App()
-TestPipelineStack(app, "TestPipelineStack")
+app = cdk.App()
+PipelineStack(app, "PipelineStack",
+    env=cdk.Environment(account="996200611121", region="ap-south-1")
+)
 app.synth()
